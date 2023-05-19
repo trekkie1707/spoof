@@ -9,6 +9,8 @@ import (
 	"os"
 	"regexp"
 	"strings"
+
+	myParsers "github.com/trekkie1707/spoof/parsers"
 )
 
 var fileFlag = flag.Bool("f", false, "Input will be read from the file provided")
@@ -18,8 +20,19 @@ var exprEnd = regexp.MustCompile(`{{[^}]*\x00`)
 var exprCutoff = regexp.MustCompile(`{{[^}]*`)
 var expr = regexp.MustCompile(`{{[^{}]+}}`)
 
+var parsers = map[string]func(string)string{
+	"s": myParsers.ParseString,
+	"b": myParsers.ParseBool,
+	"i": myParsers.ParseInt,
+}
+
 func parse(value string) string {
+	fmt.Println(value)
 	ret := strings.Replace(value, value, value[2:len(value)-2], 1)
+	function, found := parsers[string(ret[0])]
+	if found {
+		ret = function(ret)
+	}
 	return ret
 }
 
@@ -30,21 +43,6 @@ func parseInput(input string) {
 		}
 	}
 	fmt.Print(input)
-}
-
-func read(r *bufio.Reader) ([]byte, error) {
-	var (
-		isPrefix = true
-		err      error
-		line, ln []byte
-	)
-
-	for isPrefix && err == nil {
-		line, isPrefix, err = r.ReadLine()
-		ln = append(ln, line...)
-	}
-
-	return ln, err
 }
 
 func parseFiles(files ...string) {
@@ -67,16 +65,10 @@ func parseFiles(files ...string) {
 				var index int
 				if indexes != nil {
 					index = indexes[len(indexes)-1][0]
-					// fmt.Println(index)
 					line = line[0:index]
-					// fmt.Println("")
-					// fmt.Println(num)
-					// fmt.Println(file.Seek(0, os.SEEK_CUR))
-					file.Seek(int64(fileIndex), os.SEEK_SET)
-					// fmt.Println(file.Seek(0, os.SEEK_CUR))
-					file.Seek(int64(index-num), os.SEEK_CUR)
+					file.Seek(int64(fileIndex), io.SeekCurrent)
+					file.Seek(int64(index-num), io.SeekCurrent)
 					fileIndex += index - num
-					// fmt.Println(file.Seek(0, os.SEEK_CUR))
 					reader.Reset(file)
 				}
 			}
