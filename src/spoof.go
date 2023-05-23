@@ -24,10 +24,10 @@ var parsers = map[string]func(string)string{
 	"s": myParsers.ParseString,
 	"b": myParsers.ParseBool,
 	"i": myParsers.ParseInt,
+	"l": myParsers.ParseList,
 }
 
 func parse(value string) string {
-	fmt.Println(value)
 	ret := strings.Replace(value, value, value[2:len(value)-2], 1)
 	function, found := parsers[string(ret[0])]
 	if found {
@@ -39,6 +39,7 @@ func parse(value string) string {
 func parseInput(input string) {
 	for exprBroad.MatchString(input) {
 		for _, match := range expr.FindAllString(input, -1) {
+			fmt.Printf("Before: %s\n", match)
 			input = strings.Replace(input, match, parse(match), 1)
 		}
 	}
@@ -57,7 +58,6 @@ func parseFiles(files ...string) {
 		for read > 0 {
 			line := make([]byte, 1024)
 			num, err := reader.Read(line)
-			// fmt.Println(string(line))
 			read = num
 			fileIndex += num
 			indexes := exprCutoff.FindAllIndex(line, -1)
