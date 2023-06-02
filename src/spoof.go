@@ -36,7 +36,7 @@ func parse(value string) string {
 	return ret
 }
 
-func parseInput(input string) {
+func ParseInput(input string) {
 	for exprBroad.MatchString(input) {
 		for _, match := range expr.FindAllString(input, -1) {
 			fmt.Printf("Before: %s\n", match)
@@ -46,7 +46,7 @@ func parseInput(input string) {
 	fmt.Print(input)
 }
 
-func parseFiles(files ...string) {
+func ParseFiles(files ...string) {
 	for _, filePath := range files {
 		file, err := os.Open(filePath)
 		if err != nil {
@@ -78,7 +78,7 @@ func parseFiles(files ...string) {
 				}
 				log.Fatalf("a real error happened here: %v\n", err)
 			}
-			parseInput(string(line))
+			ParseInput(string(line))
 		}
 	}
 }
@@ -86,8 +86,8 @@ func parseFiles(files ...string) {
 func main() {
 	flag.Parse()
 	if *fileFlag {
-		parseFiles(flag.Args()...)
+		ParseFiles(flag.Args()...)
 	} else {
-		parseInput(strings.Join(flag.Args(), " "))
+		ParseInput(strings.Join(flag.Args(), " "))
 	}
 }
