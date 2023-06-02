@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/trekkie1707/spoof/constants"
+	"github.com/trekkie1707/strl/constants"
 )
 
 type StringArgs struct {

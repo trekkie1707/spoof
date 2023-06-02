@@ -1,2 +1,2 @@
-# spoof
-A template based data randomizer.
+# strl
+Simple text randomization language

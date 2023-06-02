@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	myParsers "github.com/trekkie1707/spoof/parsers"
+	myParsers "github.com/trekkie1707/strl/parsers"
 )
 
 var fileFlag = flag.Bool("f", false, "Input will be read from the file provided")
@@ -25,6 +25,7 @@ var parsers = map[string]func(string)string{
 	"b": myParsers.ParseBool,
 	"i": myParsers.ParseInt,
 	"l": myParsers.ParseList,
+	"f": myParsers.ParseFloat,
 }
 
 func parse(value string) string {
